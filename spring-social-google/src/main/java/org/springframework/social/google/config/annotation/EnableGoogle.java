@@ -15,21 +15,20 @@
  */
 package org.springframework.social.google.config.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import org.springframework.context.annotation.Import;
-import org.springframework.social.connect.ConnectionFactoryLocator;
-import org.springframework.social.connect.ConnectionRepository;
+
+import java.lang.annotation.*;
 
 /**
- * Annotation to enable LinkedIn in a Spring Social application.
- * Configures a {@link LinkedInConnectionFactory} bean (and a {@link ConnectionFactoryLocator} bean if one isn't already registered).
- * Also configures a request-scoped {@link LinkedIn} bean fetched from the current user's {@link ConnectionRepository}. 
+ * Annotation to enable Google APIs in a Spring Social application.
+ *
+ * Configures useful Google API clients like a {@link org.springframework.social.google.connect.GoogleConnectionFactory},
+ * a {@link org.springframework.social.google.config.GoogleApiHelper}, and
+ * a {@link org.springframework.social.google.security.GoogleAuthenticationService}.
+ *
+ * The {@link org.springframework.social.google.connect.GoogleConnectionFactory} provides most of what powers
+ * the Oauth integration, in Spring MVC.
+ *
  * @author Craig Walls
  */
 @Target(ElementType.TYPE)

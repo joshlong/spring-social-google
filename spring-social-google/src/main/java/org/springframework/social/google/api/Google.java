@@ -18,6 +18,7 @@ package org.springframework.social.google.api;
 import org.springframework.social.ApiBinding;
 import org.springframework.social.google.api.drive.DriveOperations;
 import org.springframework.social.google.api.impl.GoogleTemplate;
+import org.springframework.social.google.api.mirror.MirrorOperations;
 import org.springframework.social.google.api.plus.PlusOperations;
 import org.springframework.social.google.api.tasks.TaskOperations;
 import org.springframework.social.google.api.userinfo.UserInfoOperations;
@@ -29,6 +30,19 @@ import org.springframework.social.google.api.userinfo.UserInfoOperations;
  * @author Gabriel Axel
  */
 public interface Google extends ApiBinding {
+	/**
+	 * Retrieves {@link MirrorOperations} which is used for interacting
+	 * with Google's Mirror API, which is used to build
+	 * applications that run <A href="http://google.com/glass">on Google Glass-based devices</A>.
+	 *
+	 * <ul>
+	 *    <li>https://www.googleapis.com/auth/glass.timeline</li>
+	 *    <li>https://www.googleapis.com/auth/glass.location</li>
+	 * </ul>
+	 *
+	 * @return {@link MirrorOperations} for the authenticated user
+	 */
+	MirrorOperations mirrorOperations();
 
 	/**
 	 * Retrieves {@link UserInfoOperations}, used for fetching user profile
@@ -100,4 +114,6 @@ public interface Google extends ApiBinding {
 	 * @return The OAuth2 access token
 	 */
 	String getAccessToken();
+
+
 }

@@ -15,34 +15,31 @@
  */
 package org.springframework.social.google.api.impl;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
-import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
-import static org.springframework.util.ReflectionUtils.findMethod;
-import static org.springframework.util.ReflectionUtils.invokeMethod;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.converter.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.social.google.api.Google;
 import org.springframework.social.google.api.drive.DriveOperations;
 import org.springframework.social.google.api.drive.impl.DriveTemplate;
+import org.springframework.social.google.api.mirror.MirrorOperations;
+import org.springframework.social.google.api.mirror.impl.MirrorTemplate;
 import org.springframework.social.google.api.plus.PlusOperations;
 import org.springframework.social.google.api.plus.impl.PlusTemplate;
 import org.springframework.social.google.api.tasks.TaskOperations;
 import org.springframework.social.google.api.tasks.impl.TaskTemplate;
 import org.springframework.social.google.api.userinfo.UserInfoOperations;
 import org.springframework.social.google.api.userinfo.impl.UserInfoTemplate;
-import org.springframework.social.oauth2.AbstractOAuth2ApiBinding;
-import org.springframework.social.oauth2.OAuth2Version;
+import org.springframework.social.oauth2.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.lang.reflect.Method;
+import java.util.*;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
+import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
+import static org.springframework.util.ReflectionUtils.findMethod;
+import static org.springframework.util.ReflectionUtils.invokeMethod;
 
 /**
  * <p>
@@ -63,6 +60,7 @@ public class GoogleTemplate extends AbstractOAuth2ApiBinding implements Google {
 	private UserInfoOperations userOperations;
 	private PlusOperations plusOperations;
 	private TaskOperations taskOperations;
+	private MirrorOperations mirrorOperations ;
 	private DriveOperations driveOperations;
 	
 	/**
@@ -87,6 +85,7 @@ public class GoogleTemplate extends AbstractOAuth2ApiBinding implements Google {
 	private void initialize() {
 		userOperations = new UserInfoTemplate(getRestTemplate(), isAuthorized());
 		plusOperations = new PlusTemplate(getRestTemplate(), isAuthorized());
+		this.mirrorOperations = new MirrorTemplate( getRestTemplate(), isAuthorized()) ;
 		taskOperations = new TaskTemplate(getRestTemplate(), isAuthorized());
 		driveOperations = new DriveTemplate(getRestTemplate(), isAuthorized());
 	}
@@ -115,6 +114,11 @@ public class GoogleTemplate extends AbstractOAuth2ApiBinding implements Google {
 	@Override
 	protected OAuth2Version getOAuth2Version() {
 		return OAuth2Version.BEARER;
+	}
+
+	@Override
+	public MirrorOperations mirrorOperations() {
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
