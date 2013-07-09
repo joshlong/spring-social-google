@@ -15,28 +15,50 @@
  */
 package org.springframework.social.showcase;
 
-import org.springframework.context.annotation.*;
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.*;
-import org.springframework.security.crypto.encrypt.*;
-import org.springframework.security.crypto.password.*;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
-import org.springframework.security.web.savedrequest.*;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.social.UserIdSource;
 import org.springframework.social.connect.UsersConnectionRepository;
-import org.springframework.social.security.*;
+import org.springframework.social.security.SocialAuthenticationFilter;
+import org.springframework.social.security.SocialAuthenticationProvider;
+import org.springframework.social.security.SocialAuthenticationServiceLocator;
+import org.springframework.social.security.SocialUser;
+import org.springframework.social.security.SocialUserDetails;
+import org.springframework.social.security.SocialUserDetailsService;
 
 @Configuration
-@ImportResource ("classpath:/security.xml")
-//@EnableGlobalMethodSecurity (prePostEnabled = true)
-public class SecurityConfig /*extends WebSecurityConfigurerAdapter*/ {
+//@ImportResource ("classpath:/security.xml")
+@EnableGlobalMethodSecurity (prePostEnabled = true)
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
-/*	@Inject
+	@Inject
 	private DataSource dataSource;
 
 	@Override
@@ -49,6 +71,19 @@ public class SecurityConfig /*extends WebSecurityConfigurerAdapter*/ {
 		http.authorizeUrls().antMatchers("/favicon.ico", "/resources" + asterisk, signin + asterisk, signout + asterisk).permitAll();
 		http.authorizeUrls().antMatchers(asterisk).authenticated();
 
+	}
+
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		// TODO Auto-generated method stub
+		return super.authenticationManagerBean();
+	}
+
+	@Bean
+	@Override
+	public UserDetailsService userDetailsServiceBean() throws Exception {
+		return super.userDetailsServiceBean();
 	}
 
 	@Override
@@ -67,7 +102,7 @@ public class SecurityConfig /*extends WebSecurityConfigurerAdapter*/ {
 		;
 
 
-	}*/
+	}
 
 	@Bean
 	public RequestCache requestCache() {
@@ -108,14 +143,14 @@ public class SecurityConfig /*extends WebSecurityConfigurerAdapter*/ {
 
 	@Bean
 	public SocialAuthenticationFilter socialAuthenticationFilter(
-			                                                              AuthenticationManager authenticationManager,
-			                                                              //       RememberMeServices rememberMeServices,
-			                                                              UsersConnectionRepository usersConnectionRepository,
-			                                                              UserIdSource userIdSource,
-			                                                              SocialAuthenticationServiceLocator authenticationServiceLocator) {
+																		  AuthenticationManager authenticationManager,
+																		  //       RememberMeServices rememberMeServices,
+																		  UsersConnectionRepository usersConnectionRepository,
+																		  UserIdSource userIdSource,
+																		  SocialAuthenticationServiceLocator authenticationServiceLocator) {
 
 		SocialAuthenticationFilter socialAuthenticationFilter = new SocialAuthenticationFilter(
-				                                                                                        authenticationManager, userIdSource, usersConnectionRepository, authenticationServiceLocator);
+																										authenticationManager, userIdSource, usersConnectionRepository, authenticationServiceLocator);
 		socialAuthenticationFilter.setSignupUrl("/signup"); // TODO: Fix filter to handle in-app paths
 //		socialAuthenticationFilter.setRememberMeServices(rememberMeServices);
 		return socialAuthenticationFilter;
