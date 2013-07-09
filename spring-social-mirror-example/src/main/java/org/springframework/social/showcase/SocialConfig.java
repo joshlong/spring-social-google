@@ -21,7 +21,6 @@ import org.springframework.social.UserIdSource;
 import org.springframework.social.config.annotation.EnableJdbcConnectionRepository;
 import org.springframework.social.connect.*;
 import org.springframework.social.connect.web.*;
-import org.springframework.social.facebook.config.annotation.EnableFacebook;
 import org.springframework.social.google.config.annotation.EnableGoogle;
 import org.springframework.social.security.AuthenticationNameUserIdSource;
 import org.springframework.social.showcase.google.GlassWareInitializationInterceptor;
@@ -34,45 +33,10 @@ import org.springframework.social.showcase.signin.SimpleSignInAdapter;
  * @author Josh Long
  */
 @Configuration
-@EnableFacebook(appId = "205992766192598", appSecret = "5fac7e9d41a9bfbbfc3b7e3d2a869dce")
 @EnableGoogle (appId = "${google.clientId}", appSecret = "${google.clientSecret}")
 @EnableJdbcConnectionRepository
 @PropertySource ("classpath:/application.properties")
 public class SocialConfig {
-
-/*
-
-	@Bean
-	@Scope (value = "singleton", proxyMode = ScopedProxyMode.INTERFACES)
-	public ConnectionFactoryLocator connectionFactoryLocator(Environment environment) {
-		ConnectionFactoryRegistry registry = new ConnectionFactoryRegistry();
-		registry.addConnectionFactory(new GoogleConnectionFactory(environment.getProperty("google.clientId"), environment.getProperty("google.clientSecret")));
-		return registry;
-	}
-
-	@Bean
-	@Scope (value = "singleton", proxyMode = ScopedProxyMode.INTERFACES)
-	public UsersConnectionRepository usersConnectionRepository(DataSource dataSource, ConnectionFactoryLocator connectionFactoryLocator) {
-		return new JdbcUsersConnectionRepository(dataSource, connectionFactoryLocator, Encryptors.noOpText());
-	}
-
-	@Bean
-	@Scope (value = "request", proxyMode = ScopedProxyMode.INTERFACES)
-	public ConnectionRepository connectionRepository(UsersConnectionRepository usersConnectionRepository) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null){
-			throw new IllegalStateException("Unable to get a ConnectionRepository: no user signed in");
-		}
-		return usersConnectionRepository.createConnectionRepository(authentication.getName());
-	}
-
-	@Bean
-	@Scope (value = "request", proxyMode = ScopedProxyMode.INTERFACES)
-	public Google google(ConnectionRepository connectionRepository) {
-		Connection<Google> google = connectionRepository.findPrimaryConnection(Google.class);
-		return google != null ? google.getApi() : null;
-	}
-*/
 
 	@Bean
 	public ConnectController connectController(ConnectionFactoryLocator connectionFactoryLocator, ConnectionRepository connectionRepository) {
@@ -81,16 +45,11 @@ public class SocialConfig {
 		return connectController;
 	}
 
-
-
 	@Bean
 	public ProviderSignInController providerSignInController(ConnectionFactoryLocator connectionFactoryLocator,
 			                                                          UsersConnectionRepository usersConnectionRepository,
 			                                                          RequestCache requestCache) {
-		ProviderSignInController providerSignInController =
-				  new ProviderSignInController(connectionFactoryLocator, usersConnectionRepository, new SimpleSignInAdapter(requestCache));
-
-		return providerSignInController;
+		return new ProviderSignInController(connectionFactoryLocator, usersConnectionRepository, new SimpleSignInAdapter(requestCache));
 	}
 
 	@Bean
