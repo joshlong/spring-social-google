@@ -51,15 +51,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		String signin = "/signin", signout = "/signout";
 		String asterisk = "/**";
-/*
-		http.formLogin().loginPage(signin).loginProcessingUrl(signin + "/authenticate").usernameParameter("j_username").passwordParameter("j_password").permitAll(true);
 
-		http.logout().logoutUrl(signout).deleteCookies("JSESSIONID");
+		http.formLogin()
+				  .loginPage(signin).loginProcessingUrl(signin + "/authenticate").usernameParameter("j_username").passwordParameter("j_password").permitAll(true);
+
+		http.logout()
+				  .logoutUrl(signout).deleteCookies("JSESSIONID");
 
 		http.authorizeUrls()
 				  .antMatchers("/favicon.ico", "/resources" + asterisk, signin + asterisk, signout + asterisk).permitAll()
-				  .anyRequest().authenticated();*/
-		http
+				  .anyRequest().authenticated();
+
+
+
+	/*	   // i'm not sure if i prefer the version below (which is one long chain, but which code-formatters ruin)
+			// more than the version above
+
+			http
 				  .formLogin()
 					  .loginPage(signin)
 					  .loginProcessingUrl(signin + "/authenticate")
@@ -73,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				  .and()
 					  .authorizeUrls()
 						  .antMatchers("/favicon.ico", "/resources" + asterisk, signin + asterisk, signout + asterisk).permitAll()
-						  .anyRequest().authenticated();
+						  .anyRequest().authenticated();*/
 
 	}
 
