@@ -15,17 +15,16 @@
  */
 package org.springframework.social.showcase;
 
+import org.postgresql.Driver;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.*;
-import org.springframework.security.web.savedrequest.*;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
-import java.sql.Driver;
 
 /**
  * Main configuration class for the application. Turns on @Component scanning, loads externalized
@@ -40,6 +39,8 @@ public class ServiceConfig {
 
 	@Bean
 	public DataSource dataSource(Environment env) {
+
+
 		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
 		dataSource.setDriverClass(env.getPropertyAsClass("dataSource.driverClass", Driver.class));
 		dataSource.setUrl(env.getProperty("dataSource.url").trim());

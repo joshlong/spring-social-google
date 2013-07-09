@@ -26,15 +26,11 @@ import java.security.Principal;
 
 @Controller
 public class HomeController {
-
+	@Inject
 	private Provider<ConnectionRepository> connectionRepositoryProvider;
-	private AccountRepository accountRepository;
 
 	@Inject
-	public HomeController(Provider<ConnectionRepository> connectionRepositoryProvider, AccountRepository accountRepository) {
-		this.connectionRepositoryProvider = connectionRepositoryProvider;
-		this.accountRepository = accountRepository;
-	}
+	private AccountRepository accountRepository;
 
 	@RequestMapping ("/")
 	public String home(Principal currentUser, Model model) {
