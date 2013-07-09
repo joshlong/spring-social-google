@@ -5,5 +5,8 @@ package org.springframework.social.google.api.mirror;
  *
  * @author Josh Long
  */
-public class Card  implements TimelineItem {
+public class Card  extends  TimelineItem {
+	public Card(String id) {
+		super(id);
+	}
 }

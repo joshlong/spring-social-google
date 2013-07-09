@@ -4,11 +4,11 @@
     <groupId>org.springframework.social</groupId>
     <artifactId>spring-social-google</artifactId>
     <name>Spring Social Google</name>
-    <version>1.0.0.BUILD-SNAPSHOT</version>
+    <version>1.1.0.BUILD-SNAPSHOT</version>
 
     <properties>
         <spring.social.version>1.1.0.BUILD-SNAPSHOT</spring.social.version>
-        <spring.framework.version>3.2.2.RELEASE</spring.framework.version>
+        <spring.framework.version>3.2.3.RELEASE</spring.framework.version>
         <jackson.version>2.2.0</jackson.version>
     </properties>
 
@@ -25,7 +25,6 @@
             <url>http://www.joshlong.com</url>
             <email>josh@joshlong.com</email>
         </developer>
-
     </developers>
 
     <repositories>
@@ -64,7 +63,7 @@
             <artifactId>guava</artifactId>
             <version>14.0.1</version>
         </dependency>
-        <!-- todo remove these-->
+       <!--  todo remove these
 
         <dependency>
             <groupId>com.google.apis</groupId>
@@ -78,8 +77,8 @@
             <version>1.15.0-rc</version>
             <scope>compile</scope>
         </dependency>
-        <!-- todo remove these-->
-
+         todo remove these
+-->
         <dependency>
             <groupId>org.springframework.social</groupId>
             <artifactId>spring-social-core</artifactId>

@@ -1,9 +1,9 @@
 package org.springframework.social.google.api.mirror.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.*;
 import org.springframework.social.google.api.mirror.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -17,19 +17,36 @@ import java.util.*;
  */
 public class TimelineTemplate extends AbstractGoogleMirrorApiOperations implements TimelineOperations {
 
-	private static final String REST_PATH = "/timeline";
+	private String timelineIdParam = "{timelineId}";
+	private String attachmentsIdParam = "{attachmentsId}";
+	private String timeline = "timeline";
+	private String attachments = "attachments";
 
 	public TimelineTemplate(RestTemplate restTemplate, boolean isAuthorized) {
 		super(restTemplate, isAuthorized);
 
 	}
 
-	public UriComponentsBuilder timelineUri() {
-		return this.uri(REST_PATH);
+	public URI timelineUri() {
+		return this.uri("/" + timeline).build().toUri();
 	}
 
-	public UriComponentsBuilder timelineUri(String id) {
-		return timelineUri().fragment("/{id}");
+	public URI timelineAttachmentsUri(String timelineId) {
+		Map<String, String> parms = new HashMap<String, String>();
+		parms.put(this.timelineIdParam, timelineId);
+		return this.uri("/" + this.timeline + "/" + this.timelineIdParam + "/" + this.attachments).buildAndExpand(parms).toUri();
+	}
+
+	public URI timelineAttachmentsUri(String timelineId, String attachmentsId) {
+		Map<String, String> parms = new HashMap<String, String>();
+		parms.put(this.timelineIdParam, timelineId);
+		parms.put(this.attachmentsIdParam, attachmentsId);
+		return this.uri("/" + this.timeline + "/" + this.timelineIdParam + "/" + this.attachments + "/" + this.attachmentsIdParam).buildAndExpand(parms).toUri();
+	}
+
+	public URI timelineUri(String id) {
+		Map<String, String> idParam = Collections.singletonMap(this.timelineIdParam, id);
+		return this.uri("/" + timeline).fragment("/" + this.timelineIdParam).buildAndExpand(idParam).toUri();
 	}
 
 	/*
@@ -40,49 +57,16 @@ public class TimelineTemplate extends AbstractGoogleMirrorApiOperations implemen
 		return null;
 	}
 
-	protected Card buildCard(ResponseEntity<?> entity) {
-		return build(entity, Card.class);
-	}
-
-	protected Bundle buildBundle(ResponseEntity<?> e) {
-		return build(e, Bundle.class);
-	}
-
-	protected <T extends TimelineItem> T build(ResponseEntity<?> httpEntity, Class<T> classOfT) {
-		try {
-			T instance = classOfT.newInstance();
-			if (httpEntity.getStatusCode().ordinal() >= 200 &&
-			    httpEntity.getStatusCode().ordinal() < 300){
-
-				Object body = httpEntity.getBody();
-
-				if (body instanceof Map){
-					Map<String,Object > objectsMap =  (Map<String,Object>) body;
-
-
-
-
-				}
-				if (body instanceof TimelineItem){
-					T t = (T) body;
-					return t;
-				}
-
-
-			}
-			return instance;
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	@Override
 	public Card insertCard(Card card) {
-		URI cardUri = timelineUri().build().toUri();
+		URI cardUri = timelineUri();
 		HttpEntity<?> cardEntity = this.requestForTimelineItem(card);
-		ResponseEntity<?> responseEntity = restTemplate.postForEntity(cardUri, cardEntity, ResponseEntity.class);
-		return this.build(responseEntity, Card.class);
+		ResponseEntity<JsonNode> responseEntity = restTemplate.postForEntity(cardUri, cardEntity, JsonNode.class);
+		return from(responseEntity);
+	}
+
+	Card from(ResponseEntity<JsonNode> nodeResponseEntity) {
+		return null;
 	}
 
 	@Override
@@ -109,6 +93,10 @@ public class TimelineTemplate extends AbstractGoogleMirrorApiOperations implemen
 	public TimelineItem update(String id, TimelineItem ti, InputStream inputStream) {
 		return null;
 	}
+
+	static interface HttpResponseMap extends Map<String, String> {
+	}
+
 	//	public com.google.api.services.mirror.Mirror.Timeline.Delete delete(java.lang.String s) throws java.io.IOException { /* compiled code */ }
 
 //	public com.google.api.services.mirror.Mirror.Timeline.Get get(java.lang.String s) throws java.io.IOException { /* compiled code */ }

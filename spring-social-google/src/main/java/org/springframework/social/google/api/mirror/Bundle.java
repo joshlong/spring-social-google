@@ -7,15 +7,20 @@ import java.util.*;
  *
  * @author Josh Long
  */
-public class Bundle implements TimelineItem {
+public class Bundle extends TimelineItem {
 
 
-	private LinkedList<Card> cardLinkedList = new  LinkedList<Card>();
+	private LinkedList<Card> cardLinkedList = new LinkedList<Card>();
+
+	public Bundle(String id) {
+		super(id);
+	}
 
 	public void addCard(Card card) {
 		this.cardLinkedList.add(card);
 	}
-	public List<Card> getCards(){
-	  return  new ArrayList<Card>( this.cardLinkedList);
+
+	public List<Card> getCards() {
+		return new ArrayList<Card>(this.cardLinkedList);
 	}
 }

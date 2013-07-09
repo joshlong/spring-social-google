@@ -85,7 +85,7 @@ public class GoogleTemplate extends AbstractOAuth2ApiBinding implements Google {
 	private void initialize() {
 		userOperations = new UserInfoTemplate(getRestTemplate(), isAuthorized());
 		plusOperations = new PlusTemplate(getRestTemplate(), isAuthorized());
-		this.mirrorOperations = new MirrorTemplate( getRestTemplate(), isAuthorized()) ;
+	   mirrorOperations = new MirrorTemplate( getRestTemplate(), isAuthorized()) ;
 		taskOperations = new TaskTemplate(getRestTemplate(), isAuthorized());
 		driveOperations = new DriveTemplate(getRestTemplate(), isAuthorized());
 	}
@@ -118,7 +118,7 @@ public class GoogleTemplate extends AbstractOAuth2ApiBinding implements Google {
 
 	@Override
 	public MirrorOperations mirrorOperations() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return mirrorOperations;
 	}
 
 	@Override
