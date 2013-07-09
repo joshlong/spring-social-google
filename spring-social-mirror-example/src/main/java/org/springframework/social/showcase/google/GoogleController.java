@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.inject.Inject;
+
 /** @author Josh Long */
 @Controller
 public class GoogleController {
@@ -15,10 +17,10 @@ public class GoogleController {
 
 	private final String googlePath = "google";
 
-//	@Inject
+	@Inject
 	private Google googleTemplate;
 
-//	@Inject
+	@Inject
 	private ConnectionRepository connectionRepository;
 
 	@RequestMapping ("/drive-about")
@@ -35,7 +37,7 @@ public class GoogleController {
 			return "redirect:/connect/" + googlePath;
 		}
 		model.addAttribute("profile", connection.getApi().userOperations().getUserProfile());
-		return "/" + this.googlePath + "/profile";
+		return this.googlePath + "/profile";
 	}
 
 }

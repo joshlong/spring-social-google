@@ -63,10 +63,5 @@ public class ServiceConfig {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
 
-	@Bean
-	public RequestCache requestCache() {
-		return new HttpSessionRequestCache();
-	}
-
 
 }

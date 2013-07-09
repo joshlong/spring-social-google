@@ -23,14 +23,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.encrypt.*;
 import org.springframework.security.crypto.password.*;
-import org.springframework.security.web.authentication.*;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+import org.springframework.security.web.savedrequest.*;
 import org.springframework.social.UserIdSource;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.security.*;
 
 @Configuration
-@ImportResource("classpath:/security.xml")
-//@EnableWebSecurity
+@ImportResource ("classpath:/security.xml")
 //@EnableGlobalMethodSecurity (prePostEnabled = true)
 public class SecurityConfig /*extends WebSecurityConfigurerAdapter*/ {
 
@@ -69,6 +70,11 @@ public class SecurityConfig /*extends WebSecurityConfigurerAdapter*/ {
 	}*/
 
 	@Bean
+	public RequestCache requestCache() {
+		return new HttpSessionRequestCache();
+	}
+
+	@Bean
 	public TextEncryptor textEncryptor() {
 		return Encryptors.noOpText();
 	}
@@ -78,11 +84,11 @@ public class SecurityConfig /*extends WebSecurityConfigurerAdapter*/ {
 		return NoOpPasswordEncoder.getInstance();
 	}
 
-	 // Social Security configuration
+	// Social Security configuration
 
-	@Bean public RememberMeServices rememberMeServices (){
-		RememberMeServices rememberMeServices  =  new NullRememberMeServices();
-		return rememberMeServices ;
+	@Bean
+	public RememberMeServices rememberMeServices(UserDetailsService userDetailsService) {
+		return new TokenBasedRememberMeServices("remember-me", userDetailsService);
 	}
 
 	@Bean
@@ -103,12 +109,15 @@ public class SecurityConfig /*extends WebSecurityConfigurerAdapter*/ {
 	@Bean
 	public SocialAuthenticationFilter socialAuthenticationFilter(
 			                                                              AuthenticationManager authenticationManager,
-			                                                              RememberMeServices rememberMeServices,
+			                                                              //       RememberMeServices rememberMeServices,
 			                                                              UsersConnectionRepository usersConnectionRepository,
+			                                                              UserIdSource userIdSource,
 			                                                              SocialAuthenticationServiceLocator authenticationServiceLocator) {
-		SocialAuthenticationFilter socialAuthenticationFilter = new SocialAuthenticationFilter(authenticationManager, userIdSource(), usersConnectionRepository, authenticationServiceLocator);
+
+		SocialAuthenticationFilter socialAuthenticationFilter = new SocialAuthenticationFilter(
+				                                                                                        authenticationManager, userIdSource, usersConnectionRepository, authenticationServiceLocator);
 		socialAuthenticationFilter.setSignupUrl("/signup"); // TODO: Fix filter to handle in-app paths
-		socialAuthenticationFilter.setRememberMeServices(rememberMeServices);
+//		socialAuthenticationFilter.setRememberMeServices(rememberMeServices);
 		return socialAuthenticationFilter;
 	}
 
