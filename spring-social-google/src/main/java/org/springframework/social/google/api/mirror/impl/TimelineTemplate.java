@@ -2,6 +2,7 @@ package org.springframework.social.google.api.mirror.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.*;
+import org.springframework.http.converter.*;
 import org.springframework.social.google.api.mirror.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -74,8 +75,37 @@ public class TimelineTemplate extends AbstractGoogleMirrorApiOperations implemen
 		return null;
 	}
 
+	// todo
 	@Override
 	public List<TimelineItem> getTimelineItems() {
+
+		String url = "https://www.googleapis.com/mirror/v1/timeline";
+
+
+
+		Collection<HttpMessageConverter<?>> httpMessageConverters = restTemplate.getMessageConverters();
+
+		ArrayList<HttpMessageConverter<?>> newConvertersArray = new ArrayList<HttpMessageConverter<?>>();
+		newConvertersArray.add( new StringHttpMessageConverter());
+		newConvertersArray.addAll( httpMessageConverters) ;
+
+		restTemplate.getMessageConverters().clear();
+		restTemplate.getMessageConverters().addAll( newConvertersArray);
+
+
+
+		//
+      Map<String,String> insert=new HashMap<String, String>();
+		insert.put("text","Hello Josh's custom application!");
+		ResponseEntity<String> mapResponseEntity = this.restTemplate.postForEntity( url, insert, String.class);
+		System.out.println("Response from the insert:" +mapResponseEntity.getBody());
+
+
+		String response = restTemplate.getForEntity(url,String.class ).getBody();
+		System.out.println("response: " +response );
+
+
+
 		return null;
 	}
 
@@ -96,24 +126,6 @@ public class TimelineTemplate extends AbstractGoogleMirrorApiOperations implemen
 
 	static interface HttpResponseMap extends Map<String, String> {
 	}
-
-	//	public com.google.api.services.mirror.Mirror.Timeline.Delete delete(java.lang.String s) throws java.io.IOException { /* compiled code */ }
-
-//	public com.google.api.services.mirror.Mirror.Timeline.Get get(java.lang.String s) throws java.io.IOException { /* compiled code */ }
-
-//	public com.google.api.services.mirror.Mirror.Timeline.Insert insert(com.google.api.services.mirror.model.TimelineItem timelineItem) throws java.io.IOException { /* compiled code */ }
-
-//	public com.google.api.services.mirror.Mirror.Timeline.Insert insert(com.google.api.services.mirror.model.TimelineItem timelineItem, com.google.api.client.http.AbstractInputStreamContent abstractInputStreamContent) throws java.io.IOException { /* compiled code */ }
-
-//	public com.google.api.services.mirror.Mirror.Timeline.List list() throws java.io.IOException { /* compiled code */ }
-
-//	public com.google.api.services.mirror.Mirror.Timeline.Patch patch(java.lang.String s, com.google.api.services.mirror.model.TimelineItem timelineItem) throws java.io.IOException { /* compiled code */ }
-
-//	public com.google.api.services.mirror.Mirror.Timeline.Update update(java.lang.String s, com.google.api.services.mirror.model.TimelineItem timelineItem) throws java.io.IOException { /* compiled code */ }
-
-//	public com.google.api.services.mirror.Mirror.Timeline.Update update(java.lang.String s, com.google.api.services.mirror.model.TimelineItem timelineItem, com.google.api.client.http.AbstractInputStreamContent abstractInputStreamContent) throws java.io.IOException { /* compiled code */ }
-
-//	public com.google.api.services.mirror.Mirror.Timeline.Attachments attachments() { /* compiled code */ }
 
 
 }

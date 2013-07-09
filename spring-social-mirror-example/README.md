@@ -11,3 +11,6 @@ Access the project at `http://localhost:8080/spring-social-quickstart`. Discuss 
 For more on possible Google APIs, see:
 * To explore the Google APIs, see the [explorer API](https://developers.google.com/apis-explorer/).
 * To see possible OAuth scopes, consult this [https://developers.google.com/oauthplayground/](OAuth playground).
+
+
+

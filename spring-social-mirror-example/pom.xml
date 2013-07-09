@@ -6,7 +6,8 @@
     <artifactId>spring-social-mirror-example</artifactId>
     <name>Spring Social Quickstart</name>
     <packaging>war</packaging>
-    <version>1.0.0</version>
+    <version>1.1.0.BUILD-SNAPSHOT</version>
+
     <properties>
         <spring-security-javaconfig.version>1.0.0.M1</spring-security-javaconfig.version>
         <java-version>1.7</java-version>
@@ -66,7 +67,7 @@
             <dependency>
                 <groupId>org.springframework.social</groupId>
                 <artifactId>spring-social-google</artifactId>
-                <version>1.1.0.BUILD-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>

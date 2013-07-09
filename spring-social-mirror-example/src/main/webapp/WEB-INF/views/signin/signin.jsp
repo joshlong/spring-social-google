@@ -41,10 +41,8 @@
 	<!-- GOOGLE SIGNIN -->
 Or
 <form style="display: inline-block" id="google_signin" action="${pageContext.request.contextPath}/signin/google" method="POST">
-    <%--
 
-    --%>
-    <input type="hidden" name="scope" value="https://www.googleapis.com/auth/glass.timeline https://www.googleapis.com/auth/glass.location https://www.googleapis.com/auth/userinfo.profile" />
+    <input type="hidden" name="scope" value="https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/glass.timeline https://www.googleapis.com/auth/glass.location https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.apps.readonly https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.scripts" />
     <button type="submit"><img src="${pageContext.request.contextPath}/resources/social/google/connect-with-google.png" /></button>
 </form>
 

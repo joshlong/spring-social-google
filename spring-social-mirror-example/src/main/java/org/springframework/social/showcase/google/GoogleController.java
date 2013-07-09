@@ -1,43 +1,52 @@
 package org.springframework.social.showcase.google;
 
-import org.springframework.http.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.social.connect.*;
 import org.springframework.social.google.api.Google;
-import org.springframework.social.google.api.drive.*;
+import org.springframework.social.google.api.mirror.*;
+import org.springframework.social.google.api.plus.PlusOperations;
+import org.springframework.social.google.api.userinfo.GoogleUserProfile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.List;
 
-/** @author Josh Long */
 @Controller
+@RequestMapping ("/google")
 public class GoogleController {
 
+	@Inject private Google googleTemplate;
 
-	private final String googlePath = "google";
+	@Inject private ConnectionRepository connectionRepository;
 
-	@Inject
-	private Google googleTemplate;
-
-	@Inject
-	private ConnectionRepository connectionRepository;
-
-	@RequestMapping ("/drive-about")
-	public ResponseEntity<?> drive() {
-		DriveOperations driveOperations = this.googleTemplate.driveOperations();
-		DriveAbout driveAbout = driveOperations.getAbout();
-		return new ResponseEntity<DriveAbout>(driveAbout, null, HttpStatus.OK);
-	}
-
-	@RequestMapping (value = googlePath, method = RequestMethod.GET)
+	@RequestMapping
 	public String home(Model model) {
 		Connection<Google> connection = connectionRepository.findPrimaryConnection(Google.class);
 		if (connection == null){
-			return "redirect:/connect/" + googlePath;
+			return "redirect:/connect/google";
 		}
 		model.addAttribute("profile", connection.getApi().userOperations().getUserProfile());
-		return this.googlePath + "/profile";
+		return "google/profile";
+	}
+
+	@RequestMapping("/plus")
+	public @ResponseBody Object  plus(Authentication authentication, Model model ) {
+		 PlusOperations plusTemplate = googleTemplate.plusOperations();
+		String accessToken = googleTemplate.getAccessToken();
+		System.out.println( "access token: "+ accessToken);
+
+//		GoogleUserProfile googleUserProfile = googleTemplate.userOperations().getUserProfile();
+//		System.out.println(googleUserProfile.toString());
+
+		TimelineOperations timelineOperations = googleTemplate.mirrorOperations().timelineOperations();
+		List<TimelineItem> timeLineItems = timelineOperations.getTimelineItems();
+	 	System.out.println(timeLineItems);
+//		googleTemplate.mirrorOperations(). timelineOperations().getTimelineItems();
+
+		return null ;
+
 	}
 
 }
