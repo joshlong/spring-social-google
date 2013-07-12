@@ -1,6 +1,6 @@
 package org.springframework.social.google.api.mirror;
 
-import org.springframework.social.google.api.plus.Activity;
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.*;
 
@@ -10,34 +10,40 @@ import java.util.*;
  *
  * @author Josh Long
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class TimelineItem extends MirrorApiEntity {
+
 	private final static String KIND = "mirror#timelineItem";
 	private List<MenuItem> menuItems = new ArrayList<MenuItem>();
-	private String inReplyTo;
-	private Date displayTime;
-
-
-
-	private Activity.Attachment[] attachments;
-	private Contact creator;
+	private List<Attachment> attachments = new ArrayList<Attachment>();
 	private List<Contact> recipients = new ArrayList<Contact>();
-	private Location location;
-	private Date created;
+	private List<String> htmlPages = new ArrayList<String>();
+
+	@JsonProperty ("isPinned")
 	private boolean pinned;
-	private String bundleId;
+
+	@JsonProperty ("isDeleted")
 	private boolean deleted;
+
+	@JsonProperty ("isBundleCover")
+	private boolean bundleCover;
+
+	private Location location;
+	private Notification notification;
+	private Contact creator;
+	private Date displayTime;
+	private Date created;
+	private Date updated;
+	private String bundleId;
+	private String inReplyTo;
 	private String text;
 	private String title;
-	private List<String> htmlPages;
 	private String sourceItemId;
-	private boolean bundleCover;
-	private int pinScore;
 	private String speakableText;
 	private String canonicalUrl;
 	private String selfLink;
-	private Notification notification;
 	private String html;
-	private Date updated;
+	private int pinScore;
 
 	public TimelineItem(String id) {
 		super(id, KIND);
