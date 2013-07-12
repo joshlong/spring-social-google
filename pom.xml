@@ -7,7 +7,7 @@
      <packaging>pom</packaging>
      <version>1.1.0.BUILD-SNAPSHOT</version>
   	<modules>
-			<module>spring-social-mirror-example</module>
+			<module>spring-social-google-showcase</module>
 			<module>spring-social-google</module>
 		</modules>
 </project>

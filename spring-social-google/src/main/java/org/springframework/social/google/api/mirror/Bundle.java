@@ -9,12 +9,11 @@ import java.util.*;
  */
 public class Bundle extends TimelineItem {
 
-
-	private LinkedList<Card> cardLinkedList = new LinkedList<Card>();
-
 	public Bundle(String id) {
 		super(id);
 	}
+
+	private LinkedList<Card> cardLinkedList = new LinkedList<Card>();
 
 	public void addCard(Card card) {
 		this.cardLinkedList.add(card);

@@ -1,8 +1,5 @@
 package org.springframework.social.google.api.mirror;
 
-import java.io.InputStream;
-import java.util.List;
-
 /**
  * Handles operations against the Google Glass TimeLineOperations.
  * <p/>
@@ -12,17 +9,18 @@ import java.util.List;
  * @author Josh Long
  */
 public interface TimelineOperations {
-	Card insertCard(Card card);
 
-	Bundle insertBundle(Card[] cards);
+	TimelineItem insertCard(TimelineItem card);
 
-	List<TimelineItem> getTimelineItems();
+	/*Bundle insertBundle(Card[] cards);
 
-	TimelineItem update(String id, TimelineItem ti);
+	List< TimelineItem> getTimelineItems();
 
-	TimelineItem patch(String id, TimelineItem ti);
+	TimelineItem update(String id,  TimelineItem ti);
 
-	TimelineItem update(String id, TimelineItem ti, InputStream inputStream);
+	TimelineItem patch(String id,   TimelineItem ti);
+
+	TimelineItem update(String id,   TimelineItem ti, InputStream inputStream);*/
 
 }
         

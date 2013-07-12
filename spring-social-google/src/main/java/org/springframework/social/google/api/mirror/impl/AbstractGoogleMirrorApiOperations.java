@@ -11,8 +11,8 @@ import org.springframework.web.util.*;
  */
 public class AbstractGoogleMirrorApiOperations extends AbstractGoogleApiOperations {
 
-	public static final String DEFAULT_ROOT_URL = "https://www.googleapis.com/";
-	public static final String DEFAULT_BASE_URL = DEFAULT_ROOT_URL + "/mirror/v1/";
+	public static final String DEFAULT_ROOT_URL = "https://www.googleapis.com";
+	public static final String DEFAULT_BASE_URL = DEFAULT_ROOT_URL + "/mirror/v1";
 	private String serviceUrl;
 
 	public AbstractGoogleMirrorApiOperations(RestTemplate restTemplate, boolean isAuthorized) {
@@ -25,9 +25,8 @@ public class AbstractGoogleMirrorApiOperations extends AbstractGoogleApiOperatio
 	}
 
 	protected UriComponentsBuilder  uri(String ext) {
-		return UriComponentsBuilder.fromPath(this.getServiceUrl())
-				         .fragment(ext)
-				          ;
+
+		return UriComponentsBuilder.fromHttpUrl(this.getServiceUrl()).path( ext) ;
 	}
 
 }

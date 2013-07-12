@@ -33,7 +33,10 @@ public abstract class ApiEntity {
 	protected ApiEntity(String id) {
 		this.id = hasText(id) ? id : null;
 	}
-
+	protected ApiEntity(String id, String etag) {
+		this(id);
+		this.etag = etag;
+	}
 	public String getId() {
 		return id;
 	}
