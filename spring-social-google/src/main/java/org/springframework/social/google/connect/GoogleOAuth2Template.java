@@ -15,16 +15,11 @@
  */
 package org.springframework.social.google.connect;
 
-import java.util.Map;
-
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.social.oauth2.AccessGrant;
-import org.springframework.social.oauth2.OAuth2Template;
+import org.springframework.http.*;
+import org.springframework.social.oauth2.*;
 import org.springframework.util.MultiValueMap;
+
+import java.util.Map;
 
 /**
  * Google-specific extension to OAuth2Template.
@@ -38,6 +33,8 @@ public class GoogleOAuth2Template extends OAuth2Template {
 				"https://accounts.google.com/o/oauth2/token");
 		setUseParametersForClientAuthentication(true);
 	}
+
+
 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })

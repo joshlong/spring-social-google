@@ -1,5 +1,6 @@
 package org.springframework.social.showcase.google.glass;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.social.google.api.Google;
 import org.springframework.social.google.api.mirror.*;
 import org.springframework.stereotype.Controller;
@@ -14,20 +15,30 @@ import javax.inject.Inject;
  */
 @Controller
 public class TimelineController {
-
 	@Inject
 	private Google google;
 
-	private TimelineOperations timelineOperations() {
-		MirrorOperations mirrorOperations = this.google.mirrorOperations();
-		return mirrorOperations.timelineOperations();
+	private TimelineOperations timelineOperations(){
+		return google.mirrorOperations().timelineOperations();
 	}
 
 	@RequestMapping ("/timelines")
 	public String timelines() throws Throwable {
-//		TimelineItem timelineItem = new TimelineItem.Builder()
-//				  .setText("Hello world from card #"+ System.currentTimeMillis()).build() ;
-//		timelineOperations().insertCard( timelineItem );
-		return "redirect:/home";
+
+		TimelineItem ti = new TimelineItem.Builder()
+				                    .setText("the text from the timeline item #" + System.currentTimeMillis())
+				                    .setTitle("The title")
+				                    .build();
+
+		TimelineItem timelineItem = this.timelineOperations().insertCard(ti);
+
+		this.debug(timelineItem);
+
+		return "redirect:/google";
+	}
+
+	/* debug the contents of the object */
+	private void debug(Object o) {
+		System.out.println(ToStringBuilder.reflectionToString(o));
 	}
 }

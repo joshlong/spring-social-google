@@ -9,9 +9,7 @@ import java.util.*;
  */
 public class Bundle extends TimelineItem {
 
-	public Bundle(String id) {
-		super(id);
-	}
+
 
 	private LinkedList<Card> cardLinkedList = new LinkedList<Card>();
 

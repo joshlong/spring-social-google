@@ -17,6 +17,7 @@ public class TimelineTemplate extends AbstractGoogleMirrorApiOperations implemen
 	private String timelineIdParam = "{timelineId}";
 	private String timeline = "timeline";
 
+
 	public TimelineTemplate(RestTemplate restTemplate, boolean isAuthorized) {
 		super(restTemplate, isAuthorized);
 	}

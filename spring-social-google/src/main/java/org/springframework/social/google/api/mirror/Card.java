@@ -7,7 +7,5 @@ package org.springframework.social.google.api.mirror;
  */
 public class Card extends TimelineItem {
 
-	public Card(String id) {
-		super(id);
-	}
+
 }
