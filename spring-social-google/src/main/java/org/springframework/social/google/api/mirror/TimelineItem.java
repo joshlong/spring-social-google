@@ -14,7 +14,6 @@ import java.util.*;
 @JsonIgnoreProperties (ignoreUnknown = true)
 public class TimelineItem extends MirrorApiEntity {
 
-	private final static String KIND = "mirror#timelineItem";
 	private List<MenuItem> menuItems = new ArrayList<MenuItem>();
 	private List<Attachment> attachments = new ArrayList<Attachment>();
 	private List<Contact> recipients = new ArrayList<Contact>();
@@ -26,7 +25,8 @@ public class TimelineItem extends MirrorApiEntity {
 	@JsonProperty ("isBundleCover")
 	private boolean bundleCover;
 	private Location location;
-	private Notification notification;
+	@JsonProperty
+	private Notification notification = new Notification();
 	private Contact creator;
 	private Date displayTime;
 	private Date created;
@@ -43,37 +43,6 @@ public class TimelineItem extends MirrorApiEntity {
 	private int pinScore;
 
 	protected TimelineItem() {
-	}
-
-
-	private TimelineItem(List<MenuItem> menuItems, Location location,
-			                      String html, List<String> htmlPages, String title, String text,
-			                      List<Contact> recipients, Contact creator, Date displayTime, boolean bundleCover, String bundleId, String canonicalUrl, String sourceItemId) {
-		this.sourceItemId = sourceItemId;
-		this.creator = creator;
-		this.title = title;
-		this.menuItems = menuItems;
-		this.displayTime = displayTime;
-		this.bundleId = bundleId;
-		this.canonicalUrl = canonicalUrl;
-		this.bundleCover = bundleCover;
-		this.text = text;
-		if (recipients != null){
-			this.recipients.addAll(recipients);
-		}
-
-
-		this.html = html;
-		this.htmlPages = htmlPages;
-		if (this.htmlPages != null && this.htmlPages.size() > 0){
-			// it's an error to specify htmlPages (which act as cards in a bundle)
-			// without specifying the html field which will be used as the bundle cover card.
-			Assert.hasText(this.html);
-		}
-
-		this.location = location;
-
-
 	}
 
 	public List<MenuItem> getMenuItems() {
@@ -184,6 +153,63 @@ public class TimelineItem extends MirrorApiEntity {
 			return this;
 		}
 
+		public Builder setSpeakableText(String speakableText) {
+			this.timelineItem.speakableText = speakableText;
+			return this;
+		}
+
+		// convenience methods for each of the various MenuItemAction types
+		public Builder addShareMenuItem() {
+			return addMenuItem(new MenuItem(MenuItem.MenuItemAction.SHARE));
+		}
+
+		public Builder addReadAloudMenuItem() {
+			return addReadAloudMenuItem(this.timelineItem.speakableText);
+		}
+
+		public Builder addReadAloudMenuItem(String speakableText) {
+			timelineItem.speakableText = speakableText;
+			Assert.hasText(this.timelineItem.speakableText, "you must specify 'speakableText' to have your card read aloud");
+			return addMenuItem(new MenuItem(MenuItem.MenuItemAction.READ_ALOUD));
+		}
+
+		public Builder addVoiceCallMenuItem() {
+			return addMenuItem(new MenuItem(MenuItem.MenuItemAction.VOICE_CALL));
+		}
+
+		public Builder addNavigateMenuItem(Location location) {
+			timelineItem.location = location;
+			Assert.notNull(timelineItem.location, "you must specify a timelineItem.location if you specify a NAVIGATE action.");
+			return addMenuItem(new MenuItem(MenuItem.MenuItemAction.NAVIGATE));
+		}
+
+		/**
+		 * @param idOfMenuItem
+		 * 		  if the menu item action is {@link org.springframework.social.google.api.mirror.MenuItem.MenuItemAction#CUSTOM},
+		 * 		  then when the user selects this menuItem, the API triggers a notification to your {@code callbackUrl} with the
+		 * 		  {@code userActions.type} set to {@code CUSTOM} and the {@code userActions.payload} set to the ID of this menu
+		 * 		  item.
+		 */
+		public Builder addCustomMenuItem(String idOfMenuItem) {
+			return addMenuItem(new MenuItem(idOfMenuItem));
+		}
+
+		public Builder addReplyMenuItem() {
+			return addMenuItem(new MenuItem(MenuItem.MenuItemAction.REPLY));
+		}
+
+		public Builder addReplyAllMenuItem() {
+			return addMenuItem(new MenuItem(MenuItem.MenuItemAction.REPLY_ALL));
+		}
+
+		public Builder addTogglePinnedMenuItem() {
+			return addMenuItem(new MenuItem(MenuItem.MenuItemAction.TOGGLE_PINNED));
+		}
+
+		public Builder addDeleteMenuItem() {
+			return addMenuItem(new MenuItem(MenuItem.MenuItemAction.DELETE));
+		}
+
 		public Builder addMenuItem(MenuItem menuItem) {
 			timelineItem.getMenuItems().add(menuItem);
 			return this;
@@ -192,7 +218,9 @@ public class TimelineItem extends MirrorApiEntity {
 		public Builder setMenuItems(List<MenuItem> menuItems) {
 			timelineItem.menuItems = new ArrayList<MenuItem>();
 			if (menuItems != null && menuItems.size() > 0){
-				timelineItem.menuItems.addAll(menuItems);
+				for (MenuItem menuItem : menuItems) {
+					addMenuItem(menuItem);
+				}
 			}
 			return this;
 
@@ -220,7 +248,7 @@ public class TimelineItem extends MirrorApiEntity {
 
 		public Builder setText(String text) {
 			timelineItem.text = text;
-			return this;
+			return this ;
 		}
 
 		public Builder setCreator(Contact creator) {
@@ -253,78 +281,16 @@ public class TimelineItem extends MirrorApiEntity {
 			return this;
 		}
 
+		public Builder setNotification(Notification notification1) {
+			this.timelineItem.notification = notification1;
+			return this;
+		}
+
 		public Builder setTimelineItem(TimelineItem timelineItem) {
 			this.timelineItem = timelineItem;
 			return this;
 		}
 	}
 
-	public static class Notification {
-		// todo this should be an enum
-		private String level = "DEFAULT";
-		private Date deliveryTime;
 
-		public Notification(String level, Date deliveryTime) {
-			this.level = level;
-			this.deliveryTime = deliveryTime;
-		}
-
-		protected Notification() {
-		}
-
-		public String getLevel() {
-			return this.level;
-		}
-
-		public Date getDeliveryTime() {
-			return this.deliveryTime;
-		}
-	}
-
-	public static class MenuItem {
-		private String id;
-		private List<MenuItemValue> values = new ArrayList<MenuItemValue>();
-		/* Built-in actions:
-REPLY - Initiate a reply to the timeline item using the voice recording UI. The creator attribute must be set in the timeline item for this menu to be available.
-REPLY_ALL - Same behavior as REPLY. The original timeline item's recipients will be added to the reply item.
-DELETE - Delete the timeline item.
-SHARE - Share the timeline item with the available contacts.
-READ_ALOUD - Read the timeline item's speakableText aloud; if this field is not set, read the text field; if none of those fields are set, this menu item is ignored.
-VOICE_CALL - Initiate a phone call using the timeline item's creator.phone_number attribute as recipient.
-NAVIGATE - Navigate to the timeline item's location.
-TOGGLE_PINNED - Toggle the isPinned state of the timeline item.*/
-		private String action = "CUSTOM";// todo this should be an enum!!
-		private boolean removeWhenSelected;
-
-		public String getId() {
-			return id;
-		}
-
-		public String getAction() {
-			return action;
-		}
-
-		private List<MenuItemValue> getValues() {
-			return this.values;
-		}
-
-		public boolean isRemoveWhenSelected() {
-			return this.removeWhenSelected;
-		}
-
-		public static class MenuItemValue {
-			private String displayName;
-			private String iconUrl;
-			private String state = "DEFAULT"; // todo this needs to be an enum!
-
-			protected MenuItemValue() {
-			}
-
-			public MenuItemValue(String state, String iconUrl, String displayName) {
-				this.state = state;
-				this.iconUrl = iconUrl;
-				this.displayName = displayName;
-			}
-		}
-	}
 }

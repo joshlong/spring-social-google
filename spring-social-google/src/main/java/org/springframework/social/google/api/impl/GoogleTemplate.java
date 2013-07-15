@@ -59,6 +59,7 @@ import static org.springframework.util.ReflectionUtils.invokeMethod;
  */
 public class GoogleTemplate extends AbstractOAuth2ApiBinding implements Google {
 
+	private boolean forwardNonSslMirrorNotificationUrlsThroughGoogleProxy = true ;
 	private String accessToken;
 	private UserInfoOperations userOperations;
 	private PlusOperations plusOperations;
@@ -87,13 +88,10 @@ public class GoogleTemplate extends AbstractOAuth2ApiBinding implements Google {
 	}
 
 	private void initialize() {
-
 		getRestTemplate().getInterceptors().add(new LoggingClientHttpRequestInterceptor());
-
-
 		userOperations = new UserInfoTemplate(getRestTemplate(), isAuthorized());
 		plusOperations = new PlusTemplate(getRestTemplate(), isAuthorized());
-		mirrorOperations = new MirrorTemplate(getRestTemplate(), isAuthorized());
+		mirrorOperations = new MirrorTemplate(getRestTemplate(), isAuthorized(), this.forwardNonSslMirrorNotificationUrlsThroughGoogleProxy);
 		taskOperations = new TaskTemplate(getRestTemplate(), isAuthorized());
 		driveOperations = new DriveTemplate(getRestTemplate(), isAuthorized());
 	}
@@ -188,7 +186,7 @@ public class GoogleTemplate extends AbstractOAuth2ApiBinding implements Google {
 					String accept = httpHeaders.getAccept().size() > 0 ?
 							                  httpHeaders.getAccept().iterator().next().toString() : "";
 					line("uri", request.getURI().toString());
-  					line("accept", accept);
+					line("accept", accept);
 					line("request", new String(body));
 					line("http method", request.getMethod().toString());
 					logger.info("");
@@ -197,7 +195,9 @@ public class GoogleTemplate extends AbstractOAuth2ApiBinding implements Google {
 					logger.info(StringUtils.repeat("=", 50));
 					logger.info("RESPONSE");
 					logger.info(StringUtils.repeat("-", 50));
-					line("media-type", mediaType.toString());
+					if (mediaType != null){
+						line("media-type", mediaType.toString());
+					}
 					line("response", new String(bytesOfInputStream));
 					line("status code", innerResponse.getStatusCode().toString());
 					logger.info("");

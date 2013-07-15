@@ -15,47 +15,35 @@
  */
 package org.springframework.social.google.api.plus.impl;
 
-import static org.springframework.util.StringUtils.hasText;
-
 import org.springframework.social.google.api.impl.AbstractGoogleApiOperations;
-import org.springframework.social.google.api.plus.ActivitiesPage;
-import org.springframework.social.google.api.plus.Activity;
-import org.springframework.social.google.api.plus.ActivityComment;
-import org.springframework.social.google.api.plus.ActivityCommentsPage;
-import org.springframework.social.google.api.plus.ActivityQueryBuilder;
-import org.springframework.social.google.api.plus.PeoplePage;
-import org.springframework.social.google.api.plus.Person;
-import org.springframework.social.google.api.plus.PersonQueryBuilder;
-import org.springframework.social.google.api.plus.PlusOperations;
-import org.springframework.social.google.api.plus.moments.Moment;
-import org.springframework.social.google.api.plus.moments.MomentQueryBuilder;
-import org.springframework.social.google.api.plus.moments.MomentsPage;
+import org.springframework.social.google.api.plus.*;
+import org.springframework.social.google.api.plus.moments.*;
 import org.springframework.social.google.api.plus.moments.impl.MomentQueryBuilderImpl;
 import org.springframework.web.client.RestTemplate;
 
+import static org.springframework.util.StringUtils.hasText;
+
 /**
  * {@link PlusOperations} implementation.
+ *
  * @author Gabriel Axel
  */
 public class PlusTemplate extends AbstractGoogleApiOperations implements PlusOperations {
 
+	static final String PEOPLE_SEARCH_URL = "https://www.googleapis.com/plus/v1/people";
 	private static final String PEOPLE_URL = "https://www.googleapis.com/plus/v1/people/";
 	private static final String ACTIVITIES_PUBLIC = "/activities/public";
 	private static final String ACTIVITIES_URL = "https://www.googleapis.com/plus/v1/activities/";
-	
 	private static final String COMMENTS_URL = "https://www.googleapis.com/plus/v1/comments/";
 	private static final String COMMENTS = "/comments";
-	
-	static final String PEOPLE_SEARCH_URL = "https://www.googleapis.com/plus/v1/people";
 	private static final String PLUSONERS = "/people/plusoners";
 	private static final String RESHARERS = "/people/resharers";
-	
 	private static final String MOMENTS_URL = PEOPLE_URL + "me/moments/vault";
-	
+
 	public PlusTemplate(RestTemplate restTemplate, boolean isAuthorized) {
 		super(restTemplate, isAuthorized);
 	}
-	
+
 	@Override
 	public Activity getActivity(String id) {
 		return getEntity(ACTIVITIES_URL + id, Activity.class);
@@ -64,7 +52,7 @@ public class PlusTemplate extends AbstractGoogleApiOperations implements PlusOpe
 	@Override
 	public ActivitiesPage getActivities(String userId, String pageToken) {
 		StringBuilder sb = new StringBuilder(PEOPLE_URL).append(userId).append(ACTIVITIES_PUBLIC);
-		if(pageToken != null) {
+		if (pageToken != null){
 			sb.append("?pageToken=").append(pageToken);
 		}
 		return getEntity(sb.toString(), ActivitiesPage.class);
@@ -74,7 +62,7 @@ public class PlusTemplate extends AbstractGoogleApiOperations implements PlusOpe
 	public ActivitiesPage getActivities(String userId) {
 		return getActivities(userId, null);
 	}
-	
+
 	@Override
 	public ActivitiesPage searchPublicActivities(String query, String pageToken) {
 		return activityQuery().searchFor(query).fromPage(pageToken).getPage();
@@ -93,18 +81,18 @@ public class PlusTemplate extends AbstractGoogleApiOperations implements PlusOpe
 	@Override
 	public ActivityCommentsPage getComments(String activityId, String pageToken) {
 		StringBuilder sb = new StringBuilder(ACTIVITIES_URL)
-			.append(activityId).append(COMMENTS);
-		if(hasText(pageToken)) {
+				                     .append(activityId).append(COMMENTS);
+		if (hasText(pageToken)){
 			sb.append("?pageToken=").append(pageToken);
 		}
 		return getEntity(sb.toString(), ActivityCommentsPage.class);
 	}
-	
+
 	@Override
 	public Person getPerson(String id) {
 		return getEntity(PEOPLE_URL + id, Person.class);
 	}
-	
+
 	@Override
 	public Person getGoogleProfile() {
 		return getPerson("me");
@@ -119,7 +107,7 @@ public class PlusTemplate extends AbstractGoogleApiOperations implements PlusOpe
 	public PeoplePage getPeopleInCircles(String id, String pageToken) {
 		return getEntity(PEOPLE_URL + id + "/people/visible", PeoplePage.class);
 	}
-	
+
 	@Override
 	public PeoplePage searchPeople(String query, String pageToken) {
 		return personQuery().searchFor(query).fromPage(pageToken).getPage();
@@ -147,7 +135,7 @@ public class PlusTemplate extends AbstractGoogleApiOperations implements PlusOpe
 
 	@Override
 	public MomentsPage getMoments(String pageToken) {
-		return momentQuery().getPage();
+		return momentQuery().fromPage(pageToken).getPage();
 	}
 
 	@Override

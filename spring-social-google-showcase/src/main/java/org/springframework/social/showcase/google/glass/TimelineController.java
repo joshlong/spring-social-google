@@ -18,21 +18,31 @@ public class TimelineController {
 	@Inject
 	private Google google;
 
-	private TimelineOperations timelineOperations(){
+	private TimelineOperations timelineOperations() {
 		return google.mirrorOperations().timelineOperations();
 	}
 
 	@RequestMapping ("/timelines")
 	public String timelines() throws Throwable {
 
-		TimelineItem ti = new TimelineItem.Builder()
-				                    .setText("the text from the timeline item #" + System.currentTimeMillis())
-				                    .setTitle("The title")
-				                    .build();
 
-		TimelineItem timelineItem = this.timelineOperations().insertCard(ti);
+		timelineOperations().clearTimeline();
+		long currentTimeMillis = System.currentTimeMillis() ;
 
-		this.debug(timelineItem);
+		 debug( timelineOperations().insertCard(
+		  new TimelineItem.Builder()
+				    .addShareMenuItem()
+					 .addDeleteMenuItem()
+					 .addReadAloudMenuItem("This is speakable text.")
+				    .addTogglePinnedMenuItem()
+				    .addCustomMenuItem("joshs_custom_menu_item_"+ currentTimeMillis  )
+				    .setText("The text is plain text #" + currentTimeMillis )
+					 .build()
+		 ) );
+
+
+
+		debug(timelineOperations().getTimelineItems());
 
 		return "redirect:/google";
 	}

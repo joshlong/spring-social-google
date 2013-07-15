@@ -3,20 +3,14 @@ package org.springframework.social.google.api.mirror;
 import java.util.Date;
 
 /**
- * <pre>
- *    {
- * "kind": "mirror#location",
- * "id": string,
- * "timestamp": datetime,
- * "latitude": double,
- * "longitude": double,
- * "accuracy": double,
- * "displayName": string,
- * "address": string
+ *
+ * Locations represent a place in the geographic world, and are used to communicate location data
+ * about a given {@link TimelineItem timeline item}.
+ * <PRE>{@code
+ * { "kind": "mirror#location", "id": string, "timestamp": datetime, "latitude": double, "longitude": double, "accuracy": double, "displayName": string, "address": string }
  * }
- * </pre>
- * <p/>
- * Handles operations against the Google Glass Location
+ * </PRE>
+ *
  *
  * @author Josh Long
  */
@@ -44,6 +38,10 @@ public class Location extends MirrorApiEntity {
 		super(id, KIND);
 	}
 
+	protected Location() {
+		super();
+	}
+
 	public Date getTimestamp() {
 		return timestamp;
 	}
@@ -66,10 +64,6 @@ public class Location extends MirrorApiEntity {
 
 	public String getAddress() {
 		return address;
-	}
-
-	protected Location() {
-		super();
 	}
 
 

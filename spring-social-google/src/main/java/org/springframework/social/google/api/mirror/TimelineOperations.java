@@ -9,6 +9,20 @@ package org.springframework.social.google.api.mirror;
  * @author Josh Long
  */
 public interface TimelineOperations {
+	TimelineItemQueryBuilder timelineQuery();
+
+	void deleteTimelineItem(String timelineItemId);
+
+	void deleteTimelineItem(TimelineItem timelineItem);
+
+	// returns the first of this application's timeline items
+	TimelineItemsPage getTimelineItems();
+
+	// handles page tokens which can be used for paging.
+	TimelineItemsPage getTimelineItems(String pageTokenId);
+
+	/* remove all the cards from the timeline. */
+	void clearTimeline();
 
 	TimelineItem insertCard(TimelineItem card);
 
